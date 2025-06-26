@@ -20,7 +20,7 @@ class Game:
             score = Score(self.window)
             menu = Menu(self.window)
             menu_return = menu.run()
-            print("Opção selecionada:", menu_return)
+
 
             if menu_return in [MENU_OPTION[0], MENU_OPTION[1], MENU_OPTION[2]]:
                 player_score = [0, 0]  # [Player1, Player2]
