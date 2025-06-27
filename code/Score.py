@@ -61,8 +61,8 @@ class Score:
         pygame.mixer_music.load('./asset/Score.mp3')
         pygame.mixer_music.play(-1)
         self.window.blit(source=self.surf, dest=self.rect)
-        self.score_text(48, 'TOP 10 SCORE', C_YELLOW, SCORE_POS['Title'])
-        self.score_text(20, 'NAME     SCORE           DATE      ', C_YELLOW, SCORE_POS['Label'])
+        self.score_text(48, 'TOP 10 SCORE', C_YELLOW, SCORE_POS['Title'], border_color=C_WHITE)
+        self.score_text(20, 'NAME     SCORE           DATE      ', C_YELLOW, SCORE_POS['Label'], border_color=C_WHITE)
         db_proxy = DBProxy('DBScore')
         list_score = db_proxy.retrieve_top10()
         db_proxy.close()
@@ -81,11 +81,24 @@ class Score:
                         return
             pygame.display.flip()
 
-    def score_text(self, text_size: int, text: str, text_color: tuple, text_center_pos: tuple):
+    def score_text(self, text_size: int, text: str, text_color: tuple, text_center_pos: tuple, border_color=None):
         text_font: Font = pygame.font.SysFont(name="Lucida Sans Typewriter", size=text_size)
+
+        if border_color:
+            # Draws the border in 8 directions
+            for dx in [-2, 0, 2]:
+                for dy in [-2, 0, 2]:
+                    if dx != 0 or dy != 0:
+                        border_surf: Surface = text_font.render(text, True, border_color).convert_alpha()
+                        border_rect: Rect = border_surf.get_rect(
+                            center=(text_center_pos[0] + dx, text_center_pos[1] + dy))
+                        self.window.blit(border_surf, border_rect)
+
+        # Main text in the center
         text_surf: Surface = text_font.render(text, True, text_color).convert_alpha()
         text_rect: Rect = text_surf.get_rect(center=text_center_pos)
         self.window.blit(source=text_surf, dest=text_rect)
+
 
 
 def get_formatted_date():
